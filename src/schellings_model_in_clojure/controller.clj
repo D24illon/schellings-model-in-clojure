@@ -13,6 +13,7 @@
 ;;; definitely more complicated than it would be if we had
 ;;; a synchronous model.
 (defn reset-world [evnt])
+  ;;(view/make-window-content (view/build-board view/number-of-individuals-on-a-side)))
 (defn toggle-start-stop [evnt])
 
 ;;; It's possible that all the binding and watcher

@@ -29,7 +29,7 @@
   ; probably where you want to call send to handle whatever
   ; needs to be done. Otherwise everything will end up happening in
   ; the main thread.
-  (println (str "I am " me " and my neighbor " neighbor " (key " key ") changed from " old-state " to " new-state)))
+  (println (str "I am " @@me " and my neighbor " @@neighbor " (key " key ") changed from " @old-state " to " @new-state)))
 
 ;; You may be able to leave this alone, but feel free to change it
 ;; if you decide to structure your solution differently.
@@ -41,7 +41,7 @@
     (atom nil)
     (let [color (if (< (rand) @balance-atom) :red :blue)
           individual (agent color)
-          position (atom individual)]
+          position (atom individual :5 :4)]
       ; I need to have all the individuals together in
       ; a collection so I can `send` them all a "message"
       ; when, e.g., we hit the "Start" button.
@@ -55,12 +55,9 @@
   "Takes an individual agent and returns the color of the individual
    at that position. You'll need to implement this so that it returns
    desired color, or 'white' if there's no individual there."
-  [position]
+  [Individual]
   ; This returns a totally random color so it should be quite
   ; obvious if you haven't dealt with this. You can specify colors
   ; with things like strings ("blue") or keywords (:red).
-  (seesaw.color/color (rand-int 256)
-                      (rand-int 256)
-                      (rand-int 256)
-                      (rand-int 256))
-  )
+  ;deref Individual in if statement
+  (if (= Individual nil) "white" (if (= @Individual :red) "red" "blue")))
