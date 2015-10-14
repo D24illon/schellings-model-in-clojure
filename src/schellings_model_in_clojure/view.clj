@@ -27,6 +27,8 @@
 (defn neighbors [position board-map]
   "Take a position atom and the board map and return all the
    neighbor position atoms."
+  ;(println (neighborhood position))
+  ;(println (count (map board-map (neighborhood position))))
   (map board-map (neighborhood position)))
 
 (defn make-coords [number-of-individuals-on-a-side]
@@ -39,9 +41,10 @@
   "Take a list of coordinate pairs and construct new position atoms,
    possibly containing individual agents, and create a map from coordinates
    to position atoms."
+  ;(println coordinates)
   (into {}
         (for [c coordinates]
-          [c (model/make-position)])))
+          [c (model/make-position c)])))
 
 (defn make-tile-map
   "Take a list of coordinate pairs and construct new tiles (small canvases),
@@ -55,8 +58,10 @@
 (defn add-neighborhood-watchers [board-map]
   "Take the board map, and generate all the watchers between position
    atoms in adjacent coordinate positions."
-  (doseq [coord (keys board-map)
-          neighbor (neighbors coord board-map)
+  (doseq [keyval board-map]
+    (println (if (= @(val keyval) nil) (key keyval) (:position @@(val keyval)))))
+  (doseq [coord [keyval board-map]
+          neighbor (if (= @(val coord) nil) (neighbors (key coord) board-map) (neighbors (:position @@(val coord)) board-map))
           :let [position (board-map coord)]]
     ; The key (the second argument) has to be unique for each watcher
     ; on a given ref. In this case the ref is the position, so we need
@@ -116,7 +121,7 @@
 
 (defn make-slider [slider-label initial-value slider-atom]
   (let [title-label (sc/label :text (str slider-label ": "))
-        value-label (sc/label :text initial-value)
+        value-label (sc/label :text (Math/round (* 100 initial-value)))
         slider (sc/slider :orientation :horizontal
                           :value (Math/round (* 100 initial-value))
                           :min 0

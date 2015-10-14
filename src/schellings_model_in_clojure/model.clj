@@ -29,19 +29,19 @@
   ; probably where you want to call send to handle whatever
   ; needs to be done. Otherwise everything will end up happening in
   ; the main thread.
-  (println (str "I am " @@me " and my neighbor " @@neighbor " (key " key ") changed from " @old-state " to " @new-state)))
+  (println (str "I am " (if (= @me nil) "white" @@me) " and my neighbor " (if (= @neighbor nil) "white" @@neighbor) " (key " key ") changed from " @old-state " to " @new-state)))
 
 ;; You may be able to leave this alone, but feel free to change it
 ;; if you decide to structure your solution differently.
 (defn make-position
   "Create a position atom that contains an individual agent, or nil
   if there's no individual there."
-  []
+  [coordinates]
   (if (< (rand) @empty-atom)
     (atom nil)
     (let [color (if (< (rand) @balance-atom) :red :blue)
-          individual (agent color)
-          position (atom individual :5 :4)]
+          individual (agent {:color color, :position coordinates, :redcount 0, :bluecount 0})
+          position (atom individual)]
       ; I need to have all the individuals together in
       ; a collection so I can `send` them all a "message"
       ; when, e.g., we hit the "Start" button.
@@ -60,4 +60,8 @@
   ; obvious if you haven't dealt with this. You can specify colors
   ; with things like strings ("blue") or keywords (:red).
   ;deref Individual in if statement
-  (if (= Individual nil) "white" (if (= @Individual :red) "red" "blue")))
+  (if (= Individual nil)
+    "white"
+    (if (= (:color @Individual) :red)
+      "red"
+      "blue")))

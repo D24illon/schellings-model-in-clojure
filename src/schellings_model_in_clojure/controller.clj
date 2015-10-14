@@ -6,15 +6,17 @@
             [seesaw.tree :as stree]
             [schellings-model-in-clojure.view :as view]))
 
+
+
 ;;; It would be good to implement "interesting" actions
 ;;; for these buttons, but it's not the priority of the
 ;;; project. It's worth thinking, though, about how you'd
 ;;; stop/pause all these asynchronous agents since that's
 ;;; definitely more complicated than it would be if we had
 ;;; a synchronous model.
-(defn reset-world [evnt])
+(defn reset-world [_])
   ;;(view/make-window-content (view/build-board view/number-of-individuals-on-a-side)))
-(defn toggle-start-stop [evnt])
+(defn toggle-start-stop [_] )
 
 ;;; It's possible that all the binding and watcher
 ;;; stuff should have happened here, but I'm not
