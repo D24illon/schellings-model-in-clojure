@@ -58,16 +58,19 @@
 (defn add-neighborhood-watchers [board-map]
   "Take the board map, and generate all the watchers between position
    atoms in adjacent coordinate positions."
-  (doseq [keyval board-map]
-    (println (if (= @(val keyval) nil) (key keyval) (:position @@(val keyval)))))
-  (doseq [coord [keyval board-map]
-          neighbor (if (= @(val coord) nil) (neighbors (key coord) board-map) (neighbors (:position @@(val coord)) board-map))
+    (doseq [coord (keys board-map)
+          neighbor (neighbors coord board-map)
           :let [position (board-map coord)]]
     ; The key (the second argument) has to be unique for each watcher
     ; on a given ref. In this case the ref is the position, so we need
     ; key to be unique for each watcher on a given position; I'm using
     ; neighbor for that, since no position should have more than one
     ; watcher for a given neighbor.
+    (if (not= @neighbor nil)
+      (if (not= @(get board-map coord) nil)
+        (if (= (:color @@neighbor) :red)
+          (send @(get board-map coord) assoc :redcount (inc (:redcount @@(get board-map coord))))
+          (send @(get board-map coord) assoc :bluecount (inc (:bluecount @@(get board-map coord)))))))
     (add-watch position neighbor
                (partial model/handle-neighbor-change neighbor))))
 

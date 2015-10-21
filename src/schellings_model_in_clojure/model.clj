@@ -14,6 +14,8 @@
 (def population (atom []))
 (def positions (atom []))
 
+(def empty-positions [])
+
 (defn handle-neighbor-change
   "Called when the state of a neighboring position changes.
    The first argument will be the position atom that is being
@@ -29,6 +31,9 @@
   ; probably where you want to call send to handle whatever
   ; needs to be done. Otherwise everything will end up happening in
   ; the main thread.
+
+
+
   (println (str "I am " (if (= @me nil) "white" @@me) " and my neighbor " (if (= @neighbor nil) "white" @@neighbor) " (key " key ") changed from " @old-state " to " @new-state)))
 
 ;; You may be able to leave this alone, but feel free to change it
@@ -36,11 +41,12 @@
 (defn make-position
   "Create a position atom that contains an individual agent, or nil
   if there's no individual there."
-  [coordinates]
+  [coordinate]
   (if (< (rand) @empty-atom)
-    (atom nil)
+    (let [position (atom nil)]
+      (into empty-positions coordinate))
     (let [color (if (< (rand) @balance-atom) :red :blue)
-          individual (agent {:color color, :position coordinates, :redcount 0, :bluecount 0})
+          individual (agent {:color color, :redcount 0, :bluecount 0})
           position (atom individual)]
       ; I need to have all the individuals together in
       ; a collection so I can `send` them all a "message"
